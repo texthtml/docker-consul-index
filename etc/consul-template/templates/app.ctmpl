@@ -1,0 +1,18 @@
+server {
+  listen 80;
+  server_name ~^index\.(?<xip>.+)\.xip\.io$;
+
+  add_header "Content-Type" "text/html;charset=utf8";
+  location / {
+    return 200 '<script>
+      document.write(
+        "<h1>Services</h1>"
+        {{range services}}
+          {{ if .Tags.Contains "VHOST" }}
+            + "<a href=\\"//{{.Name}}.$xip.xip.io:"+window.location.port+"\\">{{.Name}}</a><br>"
+          {{end}}
+        {{end}}
+      );
+    </script>';
+  }
+}
